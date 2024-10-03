@@ -5,13 +5,12 @@ from llama_index.core import Settings
 import os
 import pdfplumber
 from docx import Document as DocxDocument
-
 import json
 
 st.header("Chat with the Streamlit docs 💬 📚")
 
-# Sidebar for OpenAI API Key
-openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", type="password")
+# Get OpenAI API Key from secrets
+openai_api_key = st.secrets.openai_key
 
 # Initialize session state for messages
 if "messages" not in st.session_state:
@@ -35,9 +34,6 @@ def read_docx(file):
         text += paragraph.text + '\n'
     return text
 
-from llama_index.embeddings import OpenAIEmbeddings
-
-# Inside the load_data function
 @st.cache_resource(show_spinner=False)
 def load_data(uploaded_files):
     with st.spinner("Loading and indexing the documents – hang tight! This should take 1-2 minutes."):
@@ -50,11 +46,12 @@ def load_data(uploaded_files):
                 text = read_docx(uploaded_file)
                 docs.append(Document(text=text))
 
-        # Ensure the embedding model is set
-        Settings.embed_model = OpenAIEmbeddings(model="text-embedding-ada-002")
-
-        Settings.llm = OpenAI(model="gpt-3.5-turbo", temperature=0.5, 
-                              system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features.")
+        Settings.llm = OpenAI(
+            model="gpt-3.5-turbo",
+            temperature=0.5,
+            api_key=openai_api_key,
+            system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features."
+        )
         
         index = VectorStoreIndex.from_documents(docs, settings=Settings.llm)
         return index
@@ -85,7 +82,7 @@ def delete_selected_conversations(selected_indices):
 # File uploader for multiple PDF and DOCX files
 uploaded_files = st.file_uploader("Upload PDF or DOCX files", type=["pdf", "docx"], accept_multiple_files=True)
 
-if uploaded_files and openai_api_key:
+if uploaded_files:
     index = load_data(uploaded_files)
     chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
@@ -126,7 +123,7 @@ if uploaded_files and openai_api_key:
         st.success("Conversation ended. You can start a new one!")
 
 else:
-    st.sidebar.warning("Please enter your OpenAI API key and upload PDF or DOCX files to proceed.")
+    st.sidebar.warning("Please upload PDF or DOCX files to proceed.")
 
 # Sidebar to toggle visibility of previous conversations
 if 'show_conversations' not in st.session_state:
