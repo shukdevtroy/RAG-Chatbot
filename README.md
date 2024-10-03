@@ -97,7 +97,7 @@ For any questions or inquiries, please reach out at [shudevdatta@gmail.com].
 <body>
     <h1>Contact Me</h1>
     <p>If you have any questions, feel free to email me:</p>
-    <a href="mailto:youremail@gmail.com?subject=Inquiry&body=Hello!">Email Me</a>
+    <a href="mailto:shudevdatta@gmail.com?subject=Inquiry&body=Hello!">Email Me</a>
 </body>
 </html>
 
