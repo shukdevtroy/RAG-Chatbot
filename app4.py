@@ -5,11 +5,8 @@ from llama_index.core import Settings
 import os
 import pdfplumber
 from docx import Document as DocxDocument
-from dotenv import load_dotenv
-import json
 
-# Load environment variables from .env file
-load_dotenv()
+import json
 
 st.header("Chat with the Streamlit docs 💬 📚")
 
