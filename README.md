@@ -89,5 +89,15 @@ If you'd like to contribute to this project, feel free to submit a pull request 
 
 For any questions or inquiries, please reach out at [shudevdatta@gmail.com].
 
-```html
-<a href="mailto:shudevdatta@gmail.com?subject=Your Subject&body=Your Message">Send Email</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Link Example</title>
+</head>
+<body>
+    <h1>Contact Me</h1>
+    <p>If you have any questions, feel free to email me:</p>
+    <a href="mailto:youremail@gmail.com?subject=Inquiry&body=Hello!">Email Me</a>
+</body>
+</html>
+
