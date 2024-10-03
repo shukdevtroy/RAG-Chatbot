@@ -5,12 +5,22 @@ from llama_index.core import Settings
 import os
 import pdfplumber
 from docx import Document as DocxDocument
+from dotenv import load_dotenv
 import json
+
+# Load environment variables from .env file
+load_dotenv()
 
 st.header("Chat with the Streamlit docs 💬 📚")
 
-# Get OpenAI API Key from secrets
-openai_api_key = st.secrets.openai_key
+# Sidebar for OpenAI API Key
+if 'openai_api_key' not in st.session_state:
+    st.session_state.openai_api_key = ""
+
+# Input for OpenAI API Key
+st.session_state.openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", 
+                                                         type="password", 
+                                                         value=st.session_state.openai_api_key)
 
 # Initialize session state for messages
 if "messages" not in st.session_state:
@@ -46,12 +56,8 @@ def load_data(uploaded_files):
                 text = read_docx(uploaded_file)
                 docs.append(Document(text=text))
 
-        Settings.llm = OpenAI(
-            model="gpt-3.5-turbo",
-            temperature=0.5,
-            api_key=openai_api_key,
-            system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features."
-        )
+        Settings.llm = OpenAI(model="gpt-3.5-turbo", temperature=0.5, 
+                              system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features.")
         
         index = VectorStoreIndex.from_documents(docs, settings=Settings.llm)
         return index
@@ -82,7 +88,7 @@ def delete_selected_conversations(selected_indices):
 # File uploader for multiple PDF and DOCX files
 uploaded_files = st.file_uploader("Upload PDF or DOCX files", type=["pdf", "docx"], accept_multiple_files=True)
 
-if uploaded_files:
+if uploaded_files and st.session_state.openai_api_key:
     index = load_data(uploaded_files)
     chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
@@ -123,7 +129,7 @@ if uploaded_files:
         st.success("Conversation ended. You can start a new one!")
 
 else:
-    st.sidebar.warning("Please upload PDF or DOCX files to proceed.")
+    st.sidebar.warning("Please enter your OpenAI API key and upload PDF or DOCX files to proceed.")
 
 # Sidebar to toggle visibility of previous conversations
 if 'show_conversations' not in st.session_state:
