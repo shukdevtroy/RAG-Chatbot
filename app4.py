@@ -79,7 +79,7 @@ def delete_selected_conversations(selected_indices):
 # File uploader for multiple PDF and DOCX files
 uploaded_files = st.file_uploader("Upload PDF or DOCX files", type=["pdf", "docx"], accept_multiple_files=True)
 
-if uploaded_files and st.session_state.openai_api_key:
+if uploaded_files and openai_api_key:
     index = load_data(uploaded_files)
     chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
