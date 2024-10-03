@@ -35,6 +35,9 @@ def read_docx(file):
         text += paragraph.text + '\n'
     return text
 
+from llama_index.embeddings import OpenAIEmbeddings
+
+# Inside the load_data function
 @st.cache_resource(show_spinner=False)
 def load_data(uploaded_files):
     with st.spinner("Loading and indexing the documents – hang tight! This should take 1-2 minutes."):
@@ -46,6 +49,9 @@ def load_data(uploaded_files):
             elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 text = read_docx(uploaded_file)
                 docs.append(Document(text=text))
+
+        # Ensure the embedding model is set
+        Settings.embed_model = OpenAIEmbeddings(model="text-embedding-ada-002")
 
         Settings.llm = OpenAI(model="gpt-3.5-turbo", temperature=0.5, 
                               system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features.")
