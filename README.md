@@ -88,3 +88,6 @@ If you'd like to contribute to this project, feel free to submit a pull request 
 ## Contact
 
 For any questions or inquiries, please reach out at [shudevdatta@gmail.com].
+
+```html
+<a href="mailto:shudevdatta@gmail.com?subject=Your Subject&body=Your Message">Send Email</a>
