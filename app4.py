@@ -11,13 +11,7 @@ import json
 st.header("Chat with the Streamlit docs 💬 📚")
 
 # Sidebar for OpenAI API Key
-if 'openai_api_key' not in st.session_state:
-    st.session_state.openai_api_key = ""
-
-# Input for OpenAI API Key
-st.session_state.openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", 
-                                                         type="password", 
-                                                         value=st.session_state.openai_api_key)
+openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", type="password")
 
 # Initialize session state for messages
 if "messages" not in st.session_state:
