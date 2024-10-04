@@ -5,22 +5,12 @@ from llama_index.core import Settings
 import os
 import pdfplumber
 from docx import Document as DocxDocument
-from dotenv import load_dotenv
 import json
-
-# Load environment variables from .env file
-load_dotenv()
 
 st.header("Chat with the Streamlit docs 💬 📚")
 
-# Sidebar for OpenAI API Key
-if 'openai_api_key' not in st.session_state:
-    st.session_state.openai_api_key = ""
-
-# Input for OpenAI API Key
-st.session_state.openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", 
-                                                         type="password", 
-                                                         value=st.session_state.openai_api_key)
+# Sidebar for OpenAI API key
+api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password", placeholder="sk-...")
 
 # Initialize session state for messages
 if "messages" not in st.session_state:
@@ -88,7 +78,7 @@ def delete_selected_conversations(selected_indices):
 # File uploader for multiple PDF and DOCX files
 uploaded_files = st.file_uploader("Upload PDF or DOCX files", type=["pdf", "docx"], accept_multiple_files=True)
 
-if uploaded_files and st.session_state.openai_api_key:
+if uploaded_files and api_key:
     index = load_data(uploaded_files)
     chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
